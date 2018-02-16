@@ -17,6 +17,8 @@ try:
 except:
     from pipenv.vendor.pathlib2 import Path
 
+from .common import connection_required
+
 os.environ['PIPENV_DONT_USE_PYENV'] = '1'
 
 
@@ -107,6 +109,7 @@ class TestPipenv:
             assert p.pipenv('--rm').out
             assert not os.path.isdir(venv_path)
 
+    @connection_required
     @pytest.mark.cli
     def test_pipenv_graph(self):
         with PipenvInstance() as p:
@@ -114,6 +117,7 @@ class TestPipenv:
             assert 'requests' in p.pipenv('graph').out
             assert 'requests' in p.pipenv('graph --json').out
 
+    @connection_required
     @pytest.mark.cli
     def test_pipenv_graph_reverse(self):
         with PipenvInstance() as p:
@@ -138,6 +142,7 @@ class TestPipenv:
             assert c.return_code == 1
             assert 'Warning: Using both --reverse and --json together is not supported.' in c.err
 
+    @connection_required
     @pytest.mark.cli
     def test_pipenv_check(self):
         with PipenvInstance() as p:
@@ -175,6 +180,7 @@ class TestPipenv:
             c = p.pipenv('--man')
             assert c.return_code == 0 or c.err
 
+    @connection_required
     @pytest.mark.cli
     @pytest.mark.install
     def test_install_parse_error(self):
@@ -214,6 +220,7 @@ class TestPipenv:
             assert 'flask-cors' in p.pipfile['packages']
             assert 'flask' in p.lockfile['default']
 
+    @connection_required
     @pytest.mark.install
     def test_basic_install(self):
         with PipenvInstance() as p:
@@ -226,6 +233,7 @@ class TestPipenv:
             assert 'urllib3' in p.lockfile['default']
             assert 'certifi' in p.lockfile['default']
 
+    @connection_required
     @pytest.mark.dev
     @pytest.mark.run
     @pytest.mark.install
@@ -243,6 +251,7 @@ class TestPipenv:
             c = p.pipenv('run python -m requests.help')
             assert c.return_code == 0
 
+    @connection_required
     @pytest.mark.dev
     @pytest.mark.install
     def test_install_without_dev(self):
@@ -269,6 +278,7 @@ records = "*"
             assert c.return_code == 0
 
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.uninstall
     def test_uninstall(self):
@@ -294,6 +304,7 @@ records = "*"
             c = p.pipenv('run python -m requests.help')
             assert c.return_code > 0
 
+    @connection_required
     @pytest.mark.files
     @pytest.mark.run
     @pytest.mark.uninstall
@@ -312,6 +323,7 @@ records = "*"
             assert 'tablib' in c.out
             assert 'tablib' not in p.pipfile['packages']
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.uninstall
     def test_uninstall_all_dev(self):
@@ -346,6 +358,7 @@ records = "*"
             c = p.pipenv('run python -c "import tpfd"')
             assert c.return_code == 0
 
+    @connection_required
     @pytest.mark.extras
     @pytest.mark.install
     def test_extras_install(self):
@@ -361,6 +374,7 @@ records = "*"
             assert 'urllib3' in p.lockfile['default']
             assert 'pysocks' in p.lockfile['default']
 
+    @connection_required
     @pytest.mark.extras
     @pytest.mark.install
     @pytest.mark.local
@@ -394,6 +408,7 @@ setup(
             assert key in p.lockfile['default']
             assert 'dev' in p.lockfile['default'][key]['extras']
 
+    @connection_required
     @pytest.mark.vcs
     @pytest.mark.install
     def test_basic_vcs_install(self):
@@ -408,6 +423,7 @@ setup(
             assert p.lockfile['default']['requests'] == {"git": "https://github.com/requests/requests.git"}
             assert 'gitdb2' in p.lockfile['default']
 
+    @connection_required
     @pytest.mark.e
     @pytest.mark.vcs
     @pytest.mark.install
@@ -424,6 +440,7 @@ setup(
             assert 'urllib3' in p.lockfile['default']
             assert 'certifi' in p.lockfile['default']
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.pin
     def test_windows_pinned_pipfile(self):
@@ -440,6 +457,7 @@ tablib = "<0.12"
             assert 'tablib' in p.lockfile['default']
 
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.install
     def test_multiprocess_bug_and_install(self):
@@ -470,6 +488,7 @@ tpfd = "*"
                 c = p.pipenv('run python -c "import requests; import idna; import certifi; import records; import tpfd; import parse;"')
                 assert c.return_code == 0
 
+    @connection_required
     @pytest.mark.sequential
     @pytest.mark.install
     def test_sequential_mode(self):
@@ -498,6 +517,7 @@ tpfd = "*"
             c = p.pipenv('run python -c "import requests; import idna; import certifi; import records; import tpfd; import parse;"')
             assert c.return_code == 0
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.resolver
     @pytest.mark.backup_resolver
@@ -515,6 +535,7 @@ tpfd = "*"
             assert 'ibm-db-sa-py3' in p.lockfile['default']
 
 
+    @connection_required
     @pytest.mark.sequential
     @pytest.mark.install
     @pytest.mark.update
@@ -553,6 +574,7 @@ records = "*"
             c = p.pipenv('run python -c "import requests; import idna; import certifi; import records;"')
             assert c.return_code == 0
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.markers
     @pytest.mark.install
@@ -575,6 +597,7 @@ requests = {version = "*", markers="os_name=='splashwear'"}
             c = p.pipenv('run python -c "import requests;"')
             assert c.return_code == 1
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.alt
     @pytest.mark.install
@@ -597,6 +620,7 @@ requests = {version = "*", os_name = "== 'splashwear'"}
             c = p.pipenv('run python -c "import requests;"')
             assert c.return_code == 1
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.vcs
     @pytest.mark.tablib
@@ -610,6 +634,7 @@ requests = {version = "*", os_name = "== 'splashwear'"}
             assert p.lockfile['default']['tablib']['git'] == 'git://github.com/kennethreitz/tablib.git'
             assert 'ref' in p.lockfile['default']['tablib']
 
+    @connection_required
     @pytest.mark.run
     @pytest.mark.alt
     @pytest.mark.install
@@ -728,6 +753,7 @@ requests = {version = "*"}
             assert 'path' in p.pipfile['dev-packages'][key]
             assert 'requests' in p.lockfile['develop']
 
+    @connection_required
     @pytest.mark.code
     @pytest.mark.install
     def test_code_import_manual(self):
@@ -741,6 +767,7 @@ requests = {version = "*"}
                 p.pipenv('install -c .')
                 assert 'requests' in p.pipfile['packages']
 
+    @connection_required
     @pytest.mark.code
     @pytest.mark.check
     @pytest.mark.unused
@@ -775,6 +802,7 @@ requests = {version = "*"}
                 c = p.pipenv('check --style .')
                 assert 'requests' in c.out
 
+    @connection_required
     @pytest.mark.extras
     @pytest.mark.install
     @pytest.mark.requirements
@@ -841,6 +869,7 @@ pytest = "==3.1.1"
             for req in dev_req_list:
                 assert req in d.out
 
+    @connection_required
     @pytest.mark.lock
     @pytest.mark.complex
     def test_complex_lock_with_vcs_deps(self):
@@ -873,6 +902,7 @@ requests = {git = "https://github.com/requests/requests", egg = "requests"}
             assert 'python_dateutil' not in lock['default']
             assert 'python_dateutil' not in lock['develop']
 
+    @connection_required
     @pytest.mark.lock
     @pytest.mark.requirements
     @pytest.mark.complex
@@ -995,6 +1025,7 @@ requests = "==2.14.0"
             c = p.pipenv('install --deploy')
             assert c.return_code > 0
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.files
     @pytest.mark.urls
@@ -1014,6 +1045,7 @@ requests = "==2.14.0"
 
             assert 'file' in dep
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.files
     @pytest.mark.resolver
@@ -1037,6 +1069,7 @@ requests = "==2.14.0"
             assert all(pkg in p.lockfile['default'] for pkg in ['xlrd', 'xlwt', 'pyyaml', 'odfpy'])
 
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.files
     def test_local_zipfiles(self):
@@ -1062,6 +1095,7 @@ requests = "==2.14.0"
             assert 'file' in dep or 'path' in dep
 
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.files
     @pytest.mark.urls
@@ -1082,6 +1116,7 @@ requests = "==2.14.0"
             assert 'records' in p.lockfile['default']
 
 
+    @connection_required
     @pytest.mark.install
     @pytest.mark.files
     def test_relative_paths(self):

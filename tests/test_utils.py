@@ -6,6 +6,7 @@ from mock import patch, Mock
 
 import pipenv.utils
 
+from .common import connection_required
 
 class TestUtils:
 
@@ -202,6 +203,7 @@ class TestUtils:
     def test_win_converted_relative_path(self, input_path, expected):
         assert pipenv.utils.get_converted_relative_path(input_path) == expected
 
+    @connection_required
     def test_download_file(self):
         url = "https://github.com/kennethreitz/pipenv/blob/master/README.rst"
         output = "test_download.rst"
